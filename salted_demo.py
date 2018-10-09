@@ -144,8 +144,6 @@ class AggregateArtists(Task):
 
 class SVCTask(SaltedTask):
 
-    __version__ = '1.0'
-
     c = FloatParameter(default=100.)
     gamma = FloatParameter(default=1.)
     kernel = Parameter(default='rbf')
