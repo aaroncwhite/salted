@@ -16,6 +16,7 @@
 
 from datetime import date
 from hashlib import sha256
+import inspect
 
 from luigi import DateIntervalParameter, DateParameter, FloatParameter, \
     LocalTarget, Parameter, Task, build, format
@@ -45,11 +46,10 @@ def get_salted_version(task):
     # Uniquely specify this task
     msg += ','.join([
 
-            # Basic capture of input type
-            task.__class__.__name__,
-
-            # Change __version__ at class level when everything needs rerunning!
-            task.__version__,
+            # Hash task class source as a way of tracking versions
+            # if the source code of the task changes, then the version
+            # will automatically be incremented
+            inspect.getsource(task.__class__)
 
         ] + [
             # Depending on strictness - skipping params is acceptable if
