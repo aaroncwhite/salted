@@ -121,8 +121,8 @@ class AggregateArtists(Task):
     date_interval = DateIntervalParameter()
 
     def output(self):
-        return salted_target(
-            self, "data/artist_streams_{self.date_interval}-{salt}.tsv")
+        return self.salt_target(LocalTarget,
+                "data/artist_streams_{self.date_interval}-{salt}.tsv")
 
     def requires(self):
         return [Streams(date=date) for date in self.date_interval]
@@ -140,7 +140,7 @@ class AggregateArtists(Task):
             together.to_csv(out_file, sep='\t')
 
 
-class SVCTask(Task):
+class SVCTask(SaltedTask):
 
     __version__ = '1.0'
 
@@ -152,7 +152,7 @@ class SVCTask(Task):
 class TrainDigits(SVCTask):
 
     def output(self):
-        return salted_target(self, 'data/model-{salt}.pkl', format=format.Nop)
+        return self.salt_target(LocalTarget, 'data/model-{salt}.pkl', format=format.Nop)
 
     def run(self):
         # http://scikit-learn.org/stable/tutorial/basic/tutorial.html
@@ -172,7 +172,7 @@ class PredictDigits(SVCTask):
         return self.clone(TrainDigits)
 
     def output(self):
-        return salted_target(self, 'data/accuracy-{salt}.txt')
+        return self.salt_target(LocalTarget, 'data/accuracy-{salt}.txt')
 
     def run(self):
 
