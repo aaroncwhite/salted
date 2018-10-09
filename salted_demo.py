@@ -18,7 +18,7 @@ from datetime import date
 from hashlib import sha256
 import inspect
 
-from luigi import DateIntervalParameter, DateParameter, FloatParameter, \
+from luigi import DateIntervalParameter, IntParameter, BoolParameter, DateParameter, FloatParameter, \
     LocalTarget, Parameter, Task, build, format
 from luigi.date_interval import Week
 from luigi.task import flatten
