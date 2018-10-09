@@ -118,7 +118,7 @@ class Streams(Task):
         return LocalTarget('data/stream/{}.tsv'.format(self.date))
 
 
-class AggregateArtists(Task):
+class AggregateArtists(SaltedTask):
 
     date_interval = DateIntervalParameter()
 
