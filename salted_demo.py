@@ -63,14 +63,38 @@ def get_salted_version(task):
     return sha256(msg.encode()).hexdigest()
 
 
-def salted_target(task, file_pattern, format=None, **kwargs):
-    """A local target with a file path formed with a 'salt' kwarg
-
-    :rtype: LocalTarget
+class SaltedTask(Task):
+    """Lightly modified luigi task with an added salting method
+    for file targets
     """
-    return LocalTarget(file_pattern.format(
-        salt=get_salted_version(task)[:6], self=task, **kwargs
-    ), format=format)
+    salt_workflow = BoolParameter(
+        default=True, description='Whether targets should be "salted" by preceeding tasks')
+    salt_parameters = BoolParameter(
+        default=False, description='Whether to also include task parameters when salting a work flow')
+    salt_length = IntParameter(
+        default=6, description='The number of digits of the hashed task graph to include in target names')
+
+    def salt_target(self, target_type, file_pattern, **kwargs):
+        """A target file path formed with a 'salt' kwarg.  
+
+        Additional kwargs are passed to target_type.  The format
+        process also receives self as a keyword for additional properties
+        like parameters to be inserted as well.
+        
+        Ex.
+        self.salt_target(LocalTarget, 'path/to/data-{salt}.csv', format=format.Nop)
+        self.salt_target(LocalTarget, 'path/to/data-{self.date_parameter}-{salt}.csv', format=format.Nop)
+
+        :param luigi.Target target_type: A luigi target type to use
+        :param str file_pattern: A filename pattern to used with .format() to fill in blanks
+        :param **kwargs: keyword args passed to target_type
+
+        :rtype: str
+       
+        """
+        file_path = file_pattern.format(salt=get_salted_version(self)[
+                                        :self.salt_length], self=self)
+        return target_type(file_path, **kwargs)
 
 
 class Streams(Task):
