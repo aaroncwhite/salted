@@ -94,8 +94,14 @@ class SaltedTask(Task):
         :rtype: str
        
         """
-        file_path = file_pattern.format(salt=get_salted_version(self)[
-                                        :self.salt_length], self=self)
+        if self.salt_workflow:
+            salt = get_salted_version(self)[:self.salt_length]
+        else:
+            # This could be changed, but insert a standard word
+            # instead of a hash if instructed not to salt this workflow
+            salt = 'unsalted'
+
+        file_path = file_pattern.format(salt=salt, self=self)
         return target_type(file_path, **kwargs)
 
 
