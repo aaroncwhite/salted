@@ -67,12 +67,14 @@ class SaltedTask(Task):
     """Lightly modified luigi task with an added salting method
     for file targets
     """
-    salt_workflow = BoolParameter(
-        default=True, description='Whether targets should be "salted" by preceeding tasks')
-    salt_parameters = BoolParameter(
-        default=False, description='Whether to also include task parameters when salting a work flow')
-    salt_length = IntParameter(
-        default=6, description='The number of digits of the hashed task graph to include in target names')
+    salt_workflow = BoolParameter(default=True, 
+                                  description='Whether targets should be "salted" by preceeding tasks')
+
+    salt_parameters = BoolParameter(default=False, 
+                                    description='Whether to also include task parameters when salting a work flow')
+
+    salt_length = IntParameter(default=6, 
+                               description='The number of digits of the hashed task graph to include in target names')
 
     def salt_target(self, target_type, file_pattern, **kwargs):
         """A target file path formed with a 'salt' kwarg.  
