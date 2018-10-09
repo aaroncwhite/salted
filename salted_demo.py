@@ -100,8 +100,6 @@ class SaltedTask(Task):
 class Streams(Task):
 
     date = DateParameter()
-    
-    __version__ = '1.0'
 
     def run(self):
         # This really should be an external task, but for simplicity we'll make
@@ -121,8 +119,6 @@ class Streams(Task):
 class AggregateArtists(Task):
 
     date_interval = DateIntervalParameter()
-
-    __version__ = '1.2 - bugfix'
 
     def output(self):
         return salted_target(
